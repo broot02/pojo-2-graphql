@@ -1,0 +1,1 @@
+{"query":"{ id model account { id name sequence user { id username properties { id name }}}}"}
