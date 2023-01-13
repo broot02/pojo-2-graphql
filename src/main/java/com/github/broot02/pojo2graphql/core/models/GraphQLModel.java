@@ -3,8 +3,12 @@ package com.github.broot02.pojo2graphql.core.models;
 public abstract class GraphQLModel<T, V> {
 
     private String operationName;
-    private T requestSchema;
+    private Class<T> requestSchema;
     private V requestVariables;
+
+    protected GraphQLModel(Class<T> requestSchema) {
+        this.requestSchema = requestSchema;
+    }
 
     public String getOperationName() {
         return operationName;
@@ -14,13 +18,6 @@ public abstract class GraphQLModel<T, V> {
         this.operationName = operationName;
     }
 
-    public T getRequestSchema() {
-        return requestSchema;
-    }
-
-    public void setRequestSchema(T requestSchema) {
-        this.requestSchema = requestSchema;
-    }
 
     public V getRequestVariables() {
         return requestVariables;
@@ -28,5 +25,13 @@ public abstract class GraphQLModel<T, V> {
 
     public void setRequestVariables(V requestVariables) {
         this.requestVariables = requestVariables;
+    }
+
+    public Class<T> getRequestSchema() {
+        return requestSchema;
+    }
+
+    public void setRequestSchema(Class<T> requestSchema) {
+        this.requestSchema = requestSchema;
     }
 }

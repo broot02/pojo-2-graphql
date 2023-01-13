@@ -5,6 +5,7 @@ public class FakeAccount {
     private String id;
     private String name;
     private int sequence;
+    private FakeUser user;
 
     public String getId() {
         return id;
@@ -28,5 +29,13 @@ public class FakeAccount {
 
     public void setSequence(int sequence) {
         this.sequence = sequence;
+    }
+
+    public FakeUser getUser() {
+        return user;
+    }
+
+    public void setUser(FakeUser user) {
+        this.user = user;
     }
 }

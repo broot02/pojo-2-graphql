@@ -2,6 +2,7 @@ package com.github.broot02.pojo2graphql.jackson;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.github.broot02.pojo2graphql.fakes.FakeGraphQLQuery;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,10 +11,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import static org.junit.Assert.assertEquals;
 
-public class JacksonGraphQLHeaderGeneratorTest {
 
-    private JacksonGraphQLHeaderGenerator generator;
+public class JacksonGraphQLQueryGeneratorTest {
+
+    private JacksonGraphQLQueryGenerator generator;
     private JsonGenerator jsonGenerator;
     private Writer writer;
 
@@ -22,7 +25,7 @@ public class JacksonGraphQLHeaderGeneratorTest {
         try {
             writer = new StringWriter();
             jsonGenerator = new JsonFactory().createGenerator(writer);
-            generator = new JacksonGraphQLHeaderGenerator(jsonGenerator);
+            generator = new JacksonGraphQLQueryGenerator(jsonGenerator);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -30,10 +33,14 @@ public class JacksonGraphQLHeaderGeneratorTest {
 
     @Test
     public void Should_Match_Generated_GraphQL_Text() {
+        String expected = "{\"query\":\"{\\r\\n  id\\r\\n  model\\r\\n  account {\\r\\n      id\\r\\n      name\\r\\n      sequence\\r\\n      user {\\r\\n        id\\r\\n        username\\r\\n        properties {\\r\\n      id\\r\\n      name\\r\\n        }\\r\\n      }\\r\\n  }\\r\\n}\"}";
+
         try {
-            generator.generateHeaderInfo("test");
+            jsonGenerator.writeStartObject();
+            generator.generateQueryInfo(new FakeGraphQLQuery());
+            jsonGenerator.writeEndObject();
             jsonGenerator.flush();
-            Assert.assertEquals("mutation ()", writer.toString());
+            assertEquals(expected, writer.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
