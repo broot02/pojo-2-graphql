@@ -38,36 +38,29 @@ public class JacksonGraphQLQueryGenerator implements GraphQLQueryGenerator {
     private <T extends GraphQLModel<?, ?>> String addSchemaBody(T t) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("{").append(System.lineSeparator());
-        addSchemaFieldsToQuery(stringBuilder, t.getRequestSchema(), 0);
+        stringBuilder.append("{ ");
+        addSchemaFieldsToQuery(stringBuilder, t.getRequestSchema());
         stringBuilder.append("}");
 
         return stringBuilder.toString();
     }
 
-    private void addSchemaFieldsToQuery(StringBuilder builder, Class<?> classType, int padding) {
+    private void addSchemaFieldsToQuery(StringBuilder builder, Class<?> classType) {
         for (int i = 0; i < classType.getDeclaredFields().length; i++) {
             Field field = classType.getDeclaredFields()[i];
-            for (int size = 0; size <= padding; size++) {
-                builder.append("  ");
-            }
-
             if (field.getType().isPrimitive() || field.getType().isAssignableFrom(String.class)) {
-                builder.append(field.getName()).append(System.lineSeparator());
+                builder.append(field.getName()).append(" ");
             } else if (field.getType().isArray()) {
-                addObjectToSchema(builder, field.getName(), field.getType().getComponentType(), padding, i);
+                addObjectToSchema(builder, field.getName(), field.getType().getComponentType());
             } else {
-                addObjectToSchema(builder, field.getName(), field.getType(), padding, i);
+                addObjectToSchema(builder, field.getName(), field.getType());
             }
         }
     }
 
-    private void addObjectToSchema(StringBuilder builder, String name, Class<?> type, int padding, int index) {
-        builder.append(name).append(BEGIN_OBJECT_PADDING).append(System.lineSeparator());
-        addSchemaFieldsToQuery(builder, type, index);
-        for (int size = 0; size <= padding; size++) {
-            builder.append("  ");
-        }
-        builder.append(END_OBJECT).append(System.lineSeparator());
+    private void addObjectToSchema(StringBuilder builder, String name, Class<?> type) {
+        builder.append(name).append(" { ");
+        addSchemaFieldsToQuery(builder, type);
+        builder.append(END_OBJECT);
     }
 }
